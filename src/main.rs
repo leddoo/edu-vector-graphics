@@ -6,6 +6,10 @@ struct Line (V2, V2);
 
 
 impl Line {
+    fn direction(self) -> V2 {
+        V2(self.1.0 - self.0.0, self.1.1 - self.0.1)
+    }
+
     fn intersect(self, other: Line) -> Option<(f32, f32)> {
         /*  compute start points `p` and directions `d`,
             such that the lines are given by: `a_p + t*a_d` and `b_p + u*b_d`,
@@ -13,10 +17,10 @@ impl Line {
         */
 
         let a_p = self.0;
-        let a_d = V2(self.1.0 - self.0.0, self.1.1 - self.0.1);
+        let a_d = self.direction();
 
         let b_p = other.0;
-        let b_d = V2(other.1.0 - other.0.0, other.1.1 - other.0.1);
+        let b_d = other.direction();
 
         /*  to find the intersection, solve:
                 a_p + t*a_d = b_p + u*b_d
@@ -49,7 +53,7 @@ impl Line {
     }
 
     fn make_thicc(self, width: f32) -> Vec<Line> {
-        let direction = V2(self.1.0 - self.0.0, self.1.1 - self.0.1);
+        let direction = self.direction();
         let left = V2(-direction.1, direction.0);
 
         let length = (left.0*left.0 + left.1*left.1).sqrt();
