@@ -1,3 +1,28 @@
+/*
+    a few notes:
+
+    - the math is implemented in the most straight forward way.
+      while that makes it easier to understand, it isn't quite the complete
+      picture.  floating point numbers are tricky.  if you fill shapes, which
+      have line segments that end on the center of a pixel row (y = something +
+      0.5), you can get some very interesting images.
+
+    - the filling algorithm is very inefficient. most pixels perform the exact
+      same intersections. a better way to implement it would be to compute the
+      winding of the first pixel, then fill according to that winding until the
+      next intersection with the path, etc.
+
+    - there's also a simple implementation of stroking, which just turns each
+      line segment into a rectangle.
+
+    - usually, paths are defined using points and "verbs". so something like
+      `move-to p1; line-to p2; quadratic-to p3 p4`. to keep things simple, i've
+      just defined paths as lists of line segments.
+      the equivalent "verb path" would be: `move-to l1.p1; line-to l1.p2;
+      move-to l2.p1; line-to l2.p2`.
+*/
+
+
 #[derive(Clone, Copy, Debug)]
 struct V2 (f32, f32);
 
@@ -88,8 +113,9 @@ fn compute_winding(path: &Vec<Line>, x: f32, y: f32) -> i32 {
             let ray_hit     = t >= 0.0;
             let segment_hit = u >= 0.0 && u <= 1.0;
             if ray_hit && segment_hit {
-                // line goes up -> positive winding, else negative.
-                let delta = if line.1.1 >= line.0.1 { 1 } else { -1 };
+                // line goes down -> positive winding, else negative.
+                // (i usually define it the other way around 🤷🏻‍♀️)
+                let delta = if line.1.1 <= line.0.1 { 1 } else { -1 };
                 winding += delta;
             }
         }

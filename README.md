@@ -1,4 +1,6 @@
 educational vector graphics stuff
-TBD
 
 ![screenshot](/screenshot.png)
+
+videos:
+- introduction: https://youtu.be/33KqDTwdR08
